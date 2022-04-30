@@ -2,20 +2,24 @@ import { SIZE_BOARD } from "./helpers/ConstantVariables.js";
 import { selectElement } from "./helpers/utilitesFun.js";
 
 export class CheckerBoard {
-  constructor(boardData) {
+  constructor(boardData, onCellClick) {
     this.parentEl = selectElement("#container_CheckBoard");
     this.boardData = boardData;
     this.pieces = boardData.pieces;
     this.size = SIZE_BOARD;
-    this.createCheckerBoard();
+    this.createCheckerBoard(onCellClick);
   }
-  createCheckerBoard() {
-    this.table = document.createElement("table");
+  createCheckerBoard(onCellClick) {
+    const table = document.querySelector("table");
+    if (table) table.remove();
 
+    this.table = document.createElement("table");
     for (let row = 0; row < this.size; row++) {
       const rowElement = this.table.insertRow();
       for (let col = 0; col < this.size; col++) {
         const cell = rowElement.insertCell();
+        cell.dataset.indexPos = [row, col];
+        cell.addEventListener("click", () => onCellClick(row, col));
       }
     }
     this.setUpPawns();

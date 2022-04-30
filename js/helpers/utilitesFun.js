@@ -45,6 +45,7 @@ export const createImgHtml = (src, alt = "Image not found") => {
 export const selectElement = (query, scope = document) => {
   return scope.querySelector(query);
 };
+export const getfirstElementChild = (el) => el.firstElementChild;
 
 /**
  *

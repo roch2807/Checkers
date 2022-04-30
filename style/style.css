@@ -57,6 +57,8 @@ table tr:nth-child(even) td:nth-child(odd) {
   height: calc(var(--tdSize) * 0.8);
   border: none;
   border-radius: 50%;
+  position: absolute;
+  z-index: 2;
 }
 
 .pawn-white {

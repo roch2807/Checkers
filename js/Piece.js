@@ -9,6 +9,11 @@ export class Piece {
     this.dir = this.color === WHITE ? 1 : -1;
     this.elPawn = document.createElement("div");
     this.elPawn.classList.add("center-abs", "pawn", `pawn-${color}`);
+    this.nextOpponent = undefined;
+  }
+
+  checkBorders(row, col) {
+    return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
   }
 
   getRegularMoves() {
@@ -20,16 +25,19 @@ export class Piece {
   }
 
   filterMoves(boardData) {
-    getRegularMoves();
+    this.getRegularMoves();
     this.eatMove = [];
     this.absoluteMove = this.relativeMoves.filter((move) => {
       const [row, col] = move;
       const peice = boardData.getPlayer(row, col);
-      if (row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD)
-        if (!peice) return move;
-      if (peice.color !== this.color) {
+      if (this.checkBorders(row, col) && !peice) return move;
+
+      if (peice && peice.color !== this.color) {
+        const newRow = this.row + this.dir * 2;
         const newCol = col > this.col ? this.col + 2 : this.col - 2;
-        this.eatMove.push([this.row + this.dir * 2, newCol]);
+        const empty = boardData.getPlayer(newRow, newCol);
+        if (this.checkBorders(newRow, newCol))
+          if (!empty) this.eatMove.push([newRow, newCol]);
       }
     });
     return [...this.absoluteMove, ...this.eatMove];
