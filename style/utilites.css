@@ -1,0 +1,309 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+:root {
+  --rem-hf: calc(var(--rem1) / 2);
+  --rem1: 1rem;
+  --rem2: calc(var(--rem1) * 2);
+  --rem3: calc(var(--rem1) * 3);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+/* typography */
+h1 {
+  font-size: var(--rem2);
+}
+h2 {
+  font-size: calc(var(--rem1) * 1.5);
+}
+
+h3 {
+  font-size: calc(var(--rem1) * 1.4);
+}
+h4 {
+  font-size: calc(var(--rem1) * 1.2);
+}
+h5 {
+  font-size: calc(var(--rem1) * 1.1);
+}
+button {
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+
+a:hover,
+a:active {
+  text-decoration: underline;
+}
+
+/* component*/
+
+button {
+  border-radius: 5px;
+  padding: 0.8rem 1.5rem;
+  border: none;
+}
+
+.card {
+  background: white;
+  border: none;
+  border-radius: 5px;
+  min-width: fit-content;
+  min-height: fit-content;
+  box-shadow: 0 4px 4px 2px rgba(0, 0, 0, 0.05);
+}
+
+/** flex*/
+
+.flex-row {
+  display: flex;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.flex-warp {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ai-cen {
+  align-items: center;
+}
+.jc-cen {
+  justify-content: center;
+}
+.jc-sb-ai-cen {
+  justify-content: space-between;
+  align-items: center;
+}
+.jc-sa-ai-cen {
+  justify-content: space-around;
+  align-items: center;
+}
+.jc-ai-center {
+  justify-content: center;
+  align-items: center;
+}
+
+/* grid*/
+.grid {
+  display: grid;
+}
+
+.grid-warrper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250, 1fr));
+}
+/* position*/
+.center-abs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/*element props*/
+/* margin*/
+/* half */
+.m-all-hf {
+  margin: var(--rem-hf);
+}
+
+.mtb-hf {
+  margin: var(--rem-hf) 0;
+}
+.mrl-hf {
+  margin: 0 var(--rem-hf);
+}
+
+.mt-hf {
+  margin-top: var(--rem-hf);
+}
+.mb-hf {
+  margin-bottom: var(--rem-hf);
+}
+.mr-hf {
+  margin-right: var(--rem-hf);
+}
+.ml-hf {
+  margin-left: var(--rem-hf);
+}
+/* 1rem */
+
+.m-all {
+  margin: var(--rem1);
+}
+
+.mtb {
+  margin: var(--rem1) 0;
+}
+.mrl {
+  margin: 0 var(--rem1);
+}
+
+.mt {
+  margin-top: var(--rem1);
+}
+.mb {
+  margin-bottom: var(--rem1);
+}
+.mr {
+  margin-right: var(--rem1);
+}
+.ml {
+  margin-left: var(--rem1);
+}
+
+/* 2rem */
+.m-all-x2 {
+  margin: var(--rem2);
+}
+
+.mtb-x2 {
+  margin: var(--rem2) 0;
+}
+.mrl-x2 {
+  margin: 0 var(--rem2);
+}
+
+.mt-x2 {
+  margin-top: var(--rem2);
+}
+.mb-x2 {
+  margin-bottom: var(--rem2);
+}
+.mr-x2 {
+  margin-right: var(--rem2);
+}
+.ml-x2 {
+  margin-left: var(--rem2);
+}
+/* 3rem */
+.m-all-x3 {
+  margin: var(--rem3);
+}
+.mtb-x3 {
+  margin: var(--rem3) 0;
+}
+.mrl-x3 {
+  margin: 0 var(--rem3);
+}
+
+.mt-x3 {
+  margin-top: var(--rem3);
+}
+.mb-x3 {
+  margin-bottom: var(--rem3);
+}
+.mr-x3 {
+  margin-right: var(--rem3);
+}
+.ml-x3 {
+  margin-left: var(--rem3);
+}
+
+/*
+/* padding*/
+
+/* half */
+.p-all-hf {
+  padding: var(--rem-hf);
+}
+.ptb-hf {
+  padding: var(--rem-hf) 0;
+}
+.prl-hf {
+  padding: 0 var(--rem-hf);
+}
+
+.pt-hf {
+  margin-top: var(--rem1 / 2);
+}
+.pb-hf {
+  margin-bottom: var(--rem1 / 2);
+}
+.pr-hf {
+  margin-right: var(--rem-hf);
+}
+.pl-hf {
+  margin-left: var(--rem-hf);
+}
+
+/* 1rem */
+.p-all {
+  padding: var(--rem1);
+}
+.ptb {
+  padding: var(--rem1) 0;
+}
+.prl {
+  padding: 0 var(--rem1);
+}
+
+.pt {
+  padding-top: var(--rem1);
+}
+.pb {
+  padding-bottom: var(--rem1);
+}
+.pr {
+  padding-right: var(--rem1);
+}
+.pl {
+  padding-left: var(--rem1);
+}
+/* 2rem */
+.p-x2 {
+  padding: var(--rem2);
+}
+.ptb-x2 {
+  padding: var(--rem2) 0;
+}
+.prl-x2 {
+  padding: 0 var(--rem2);
+}
+
+.pt-x2 {
+  padding-top: var(--rem2);
+}
+.pb-x2 {
+  padding-bottom: var(--rem2);
+}
+.pr-x2 {
+  padding-right: var(--rem2);
+}
+.pl-x2 {
+  padding-left: var(--rem2);
+}
+
+/* 3rem */
+.p-x3 {
+  padding: var(--rem3);
+}
+.ptb-x3 {
+  padding: var(--rem3) 0;
+}
+.prl-x3 {
+  padding: 0 var(--rem3);
+}
+
+.pt-x3 {
+  padding-top: var(--rem3);
+}
+.pb-x3 {
+  padding-bottom: var(--rem3);
+}
+.pr-x3 {
+  padding-right: var(--rem3);
+}
+.pl-x3 {
+  padding-left: var(--rem3);
+}
