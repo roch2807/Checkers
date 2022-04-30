@@ -27,8 +27,12 @@ export class BoardData {
     return this.pieces.find((piece) => piece.row === row && piece.col === col);
   }
 
-  //   getOpponent(row,col){
-  // const peice=this.getPlayer(row,col);
-
-  //   }
+  getOpponent(row, col) {
+    const peice = this.getPlayer(row, col);
+    if (peice && peice.color !== this.color) return peice;
+  }
+  getSameColorPiece(row, col) {
+    const peice = this.getPlayer(row, col);
+    if (peice && peice.color === this.color) return peice;
+  }
 }
