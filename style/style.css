@@ -1,0 +1,109 @@
+:root {
+  --sizeTable: 72vh;
+  --tdSize: 40px;
+}
+
+body {
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#container_game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: var(--sizeTable);
+  height: var(--sizeTable);
+}
+#container_CheckBoard {
+  margin-top: 1rem;
+  padding: 1rem 0;
+  background-color: rgb(211 211 211);
+}
+
+table {
+  border: 1px solid black;
+  width: 90%;
+  height: 90%;
+  border-collapse: collapse;
+}
+
+table,
+td {
+  border: 1.2px solid rgba(28, 27, 27, 1);
+  position: relative;
+}
+
+td {
+  position: relative;
+  text-align: center;
+  height: var(--tdSize);
+  width: var(--tdSize);
+}
+/* black square  */
+table tr:nth-child(odd) td:nth-child(even),
+table tr:nth-child(even) td:nth-child(odd) {
+  background-color: rgba(27, 27, 27, 0.7);
+  border: 0.5px solid rgba(27, 27, 27, 1);
+}
+
+.pawn {
+  width: calc(var(--tdSize) * 0.8);
+  height: calc(var(--tdSize) * 0.8);
+  border: none;
+  border-radius: 50%;
+}
+
+.pawn-white {
+  background-color: white;
+}
+
+.pawn-black {
+  background-color: black;
+}
+/*pawn active*/
+
+.rotate180 {
+  transform: rotate(180deg);
+}
+.rotate0 {
+  transform: rotate(0deg);
+}
+
+.active {
+  background-color: #2e2eb561 !important;
+}
+
+td:hover {
+  background-color: #2e2eb561 !important;
+}
+.unActive {
+  background-color: inherit;
+}
+
+@media screen and (min-width: 600px) {
+  :root {
+    --sizeTable: 100vh;
+    --tdSize: 60px;
+  }
+
+  body {
+    position: relative;
+  }
+
+  #container_ChessBoard {
+    width: var(--sizeTable);
+    height: var(--sizeTable);
+    background-color: rgba(188, 188, 193);
+  }
+
+  td {
+    height: var(--tdSize);
+    width: var(--tdSize);
+  }
+}

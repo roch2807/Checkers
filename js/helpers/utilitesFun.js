@@ -1,6 +1,6 @@
 /**
  *
- * @param {Object} vaparmars Get object as parameter and console log it.
+ * @param {Object}parmaters Get object as parameter and console log it.
  */
 export const toLog = (parma) => {
   const key = Object.keys(parma);
