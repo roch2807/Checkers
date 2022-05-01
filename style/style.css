@@ -68,6 +68,12 @@ table tr:nth-child(even) td:nth-child(odd) {
 .pawn-black {
   background-color: black;
 }
+.queen-black {
+  background-color: rgb(35, 28, 77);
+}
+.queen-white {
+  background-color: rgb(206, 9, 9);
+}
 /*pawn active*/
 
 .rotate180 {

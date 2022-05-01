@@ -1,4 +1,9 @@
-import { SIZE_BOARD, WHITE } from "./helpers/ConstantVariables.js";
+import {
+  QUEEN,
+  SIMPLE_PAWN,
+  SIZE_BOARD,
+  WHITE,
+} from "./helpers/ConstantVariables.js";
 import { checkTheElIsUniqueInArray } from "./helpers/utilitesFun.js";
 
 export class Piece {
@@ -18,7 +23,20 @@ export class Piece {
     this.elPawn = document.createElement("div");
     this.elPawn.classList.add("center-abs", "pawn", `pawn-${color}`);
   }
+  setQueen() {
+    this.elPawn.classList.add(`${QUEEN}-${this.color}`);
+    this.type = QUEEN;
+  }
 
+  queenMove(directionRow, directionCol) {
+    let result = [];
+    for (let i = 1; i < SIZE_BOARD; i++) {
+      let row = this.row + directionRow * i;
+      let col = this.col + directionCol * i;
+      result.push(row, col);
+    }
+    return result;
+  }
   checkOpponentRelative(row, col) {
     const difRow = row - this.row;
     const difCol = col - this.col;
@@ -127,15 +145,27 @@ export class Piece {
   checkBorders(row, col) {
     return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
   }
-  getRegularMoves() {
-    const newRow = this.row + this.dir;
-    this.relativeMoves = [
+  pawnMove() {
+    let newRow;
+    newRow = this.row + this.dir;
+    return [
       [newRow, this.col + 1],
       [newRow, this.col - 1],
     ];
   }
+  getRelativeMoves() {
+    this.relativeMoves =
+      this.type === SIMPLE_PAWN
+        ? this.pawnMove()
+        : [
+            ...this.queenMove(-1, 0),
+            ...this.queenMove(1, 0),
+            ...this.queenMove(0, -1),
+            ...this.queenMove(0, 1),
+          ];
+  }
   filterRegularMoves(boardData) {
-    this.getRegularMoves();
+    this.getRelativeMoves();
     this.opponentPos = [];
     this.possibleMoves = this.relativeMoves.filter((move) => {
       const [row, col] = move;
@@ -150,6 +180,7 @@ export class Piece {
 
   getPossibleMove(boardData) {
     this.filterRegularMoves(boardData);
+
     return this.possibleMoves;
   }
 }

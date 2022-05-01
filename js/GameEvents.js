@@ -67,7 +67,18 @@ export class GameEvents {
     const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(
       this.getSecColor(this.activePlayer)
     );
-    if (secPlayerAmountPieces === 0) alert(`${this.activePlayer} Won`);
+    if (secPlayerAmountPieces === 0) {
+      this.activePlayer = undefined;
+      alert(`${this.activePlayer} Won`);
+    }
+  }
+  changePlayerToQueen() {
+    this.activePlayer === WHITE &&
+      this.selectPiece.row === 7 &&
+      this.selectPiece.setQueen();
+    this.activePlayer === BLACK &&
+      this.selectPiece.row === 0 &&
+      this.selectPiece.setQueen();
   }
 
   onCellClick(row, col) {
@@ -77,7 +88,9 @@ export class GameEvents {
     if (resTryMove) {
       this.selectPiece.row = row;
       this.selectPiece.col = col;
+      this.changePlayerToQueen();
       this.checkWinner();
+
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
       this.selectPiece = undefined;
       this.mustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
