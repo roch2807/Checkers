@@ -45,4 +45,14 @@ export class BoardData {
   getNumPlayersByColor(color) {
     return this.pieces.filter((piece) => piece.color === color).length;
   }
+  checkIfSomePlayerHaveEatMoves(color) {
+    return this.pieces.filter((piece) => {
+      if (color === piece.color) {
+        piece.filterRegularMoves(this);
+        piece.getEatMoves(this);
+      }
+
+      return color === piece.color && piece.eatMoves.length > 0;
+    });
+  }
 }

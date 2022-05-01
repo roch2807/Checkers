@@ -7,12 +7,16 @@ export class GameEvents {
     this.boardData = boardData;
     this.selectPiece = undefined;
     this.activePlayer = BLACK;
+    this.mustMoves = [];
   }
 
   tryRemoveFromTheGame(row, col) {
     const posOp = this.selectPiece.checkOpponentRelative(row, col);
-    this.selectPiece.eatMoves.pop();
 
+    const eatMove = this.selectPiece.eatMoves.pop();
+
+    eatMove &&
+      this.table.rows[eatMove[0]].cells[eatMove[1]].classList.remove("active");
     if (posOp.length !== 0) {
       const opponent = this.boardData.getPlayer(...posOp);
 
@@ -25,7 +29,6 @@ export class GameEvents {
   }
   tryMove(row, col) {
     if (!this.selectPiece) return;
-
     const activeTD = this.table.rows[row].cells[col];
 
     if (!activeTD.classList.contains("active")) return;
@@ -74,10 +77,12 @@ export class GameEvents {
     if (resTryMove) {
       this.selectPiece.row = row;
       this.selectPiece.col = col;
-      console.log(this.selectPiece);
       this.checkWinner();
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
       this.selectPiece = undefined;
+      this.mustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
+        this.activePlayer
+      );
     } else {
       this.cleanActiveCells();
       this.selectPiece = undefined;
@@ -86,7 +91,15 @@ export class GameEvents {
   }
   showPossibleMove(row, col) {
     const peice = this.boardData.getPlayer(row, col);
+
     if (!peice) return;
+
+    if (
+      this.mustMoves.length > 0 &&
+      !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
+    )
+      return;
+
     const checkCurActivePlayer = peice.color === this.activePlayer;
     if (!checkCurActivePlayer) return;
     const posMoves = peice.getPossibleMove(this.boardData);
