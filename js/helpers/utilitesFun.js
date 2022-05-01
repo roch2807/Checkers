@@ -204,3 +204,6 @@ export const getHowManyTimeElApperInArr = (check, arr) => {
  * @returns  The deep clone object
  */
 export const objDeepCopy = (obj) => JSON.parse(JSON.stringify(obj));
+
+export const checkTheElIsUniqueInArray = (el, arr) =>
+  !arr.some((obj) => obj.toString() === el.toString());

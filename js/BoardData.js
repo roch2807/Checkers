@@ -27,17 +27,16 @@ export class BoardData {
     return this.pieces.find((piece) => piece.row === row && piece.col === col);
   }
 
-  getOpponent(row, col) {
+  getOpponent(row, col, color) {
     const peice = this.getPlayer(row, col);
-
-    if (peice && peice.color !== this.color) return peice;
+    if (peice && peice.color !== color) return peice;
   }
   getSameColorPiece(row, col) {
     const peice = this.getPlayer(row, col);
     if (peice && peice.color === this.color) return peice;
   }
 
-  removePawn(row, col) {
+  removePlayer(row, col) {
     for (let i = 0; i < this.pieces.length; i++) {
       const peice = this.pieces[i];
       if (peice.col === col && peice.row === row) this.pieces.splice(i, 1);
