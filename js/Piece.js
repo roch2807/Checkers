@@ -5,7 +5,7 @@ export class Piece {
   constructor(row, col, color, type) {
     this.row = row;
     this.col = col;
-    this.pos = [this.row, this.col];
+
     this.color = color;
     this.type = type;
 
@@ -42,11 +42,11 @@ export class Piece {
 
     const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
     const checkBoarder = this.checkBorders(newRow, newCol);
-    const isEmpty = !boardData.getPlayer(newRow, newCol);
+    const isEmpty = boardData.getPlayer(newRow, newCol);
 
     if (!isOpponent) return;
     if (!checkBoarder) return;
-    if (!isEmpty) return;
+    if (isEmpty) return;
 
     const opponentPos = [isOpponent.row, isOpponent.col];
 
@@ -58,21 +58,29 @@ export class Piece {
 
   eatMove(boardData) {
     if (this.opponentPos.length === 0) return;
+
     this.opponentPos.forEach((absMove) => {
-      let checkNextJumpPos = this.checkEatMoveDir(this.pos, absMove, boardData);
+      let checkNextJumpPos = this.checkEatMoveDir(
+        [this.row, this.col],
+        absMove,
+        boardData
+      );
+
       if (!checkNextJumpPos) return;
       const { newMove, dirRow, dirCol } = checkNextJumpPos;
 
       checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
         this.eatMoves.push(newMove);
+
       const nextMoveLeftPos = [newMove[0] + dirRow, newMove[1] - 1];
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
 
       let checkNextleftJumpPos = this.checkEatMoveDir(
-        [newMove],
+        newMove,
         nextMoveLeftPos,
         boardData
       );
+
       let checkNextRightJumpPos = this.checkEatMoveDir(
         newMove,
         nextMoveRightPos,
@@ -83,8 +91,8 @@ export class Piece {
         if (checkNextleftJumpPos) {
           let { newMove, dirRow } = checkNextleftJumpPos;
 
-          checkTheElIsUniqueInArray(newMoveLeft, this.eatMoves) &&
-            this.eatMoves.push(newMoveLeft);
+          checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
+            this.eatMoves.push(newMove);
           const nextMovePos = [newMove[0] + dirRow, newMove[1] - 1];
           checkNextleftJumpPos = this.checkEatMoveDir(
             newMove,
@@ -98,7 +106,7 @@ export class Piece {
           checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
             this.eatMoves.push(newMove);
 
-          const nextMovePos = [newMoveRight[0] + dirRow, newMoveRight[1] + 1];
+          const nextMovePos = [newMove[0] + dirRow, newMove[1] + 1];
           checkNextRightJumpPos = this.checkEatMoveDir(
             newMove,
             nextMovePos,
@@ -110,6 +118,7 @@ export class Piece {
   }
 
   getEatMoves(boardData) {
+    this.eatMoves = [];
     this.eatMove(boardData);
 
     return this.eatMoves;
@@ -127,6 +136,7 @@ export class Piece {
   }
   filterRegularMoves(boardData) {
     this.getRegularMoves();
+    this.opponentPos = [];
     this.possibleMoves = this.relativeMoves.filter((move) => {
       const [row, col] = move;
       const piece = boardData.getPlayer(row, col);

@@ -11,6 +11,7 @@ export class GameEvents {
 
   tryRemoveFromTheGame(row, col) {
     const posOp = this.selectPiece.checkOpponentRelative(row, col);
+    this.selectPiece.eatMoves.pop();
 
     if (posOp.length !== 0) {
       const opponent = this.boardData.getPlayer(...posOp);
@@ -35,9 +36,12 @@ export class GameEvents {
 
     return this.selectPiece;
   }
+  getSecColor(color) {
+    return color === BLACK ? WHITE : BLACK;
+  }
 
   changeActivePlayer() {
-    this.activePlayer = this.activePlayer === BLACK ? WHITE : BLACK;
+    this.activePlayer = this.getSecColor(this.activePlayer);
   }
 
   cleanActiveCells() {
@@ -56,6 +60,30 @@ export class GameEvents {
     });
   }
 
+  checkWinner() {
+    const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(
+      this.getSecColor(this.activePlayer)
+    );
+    if (secPlayerAmountPieces === 0) alert(`${this.activePlayer} Won`);
+  }
+
+  onCellClick(row, col) {
+    this.table = selectElement("table");
+    const resTryMove = this.tryMove(row, col);
+
+    if (resTryMove) {
+      this.selectPiece.row = row;
+      this.selectPiece.col = col;
+      console.log(this.selectPiece);
+      this.checkWinner();
+      this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
+      this.selectPiece = undefined;
+    } else {
+      this.cleanActiveCells();
+      this.selectPiece = undefined;
+      this.showPossibleMove(row, col);
+    }
+  }
   showPossibleMove(row, col) {
     const peice = this.boardData.getPlayer(row, col);
     if (!peice) return;
@@ -63,6 +91,7 @@ export class GameEvents {
     if (!checkCurActivePlayer) return;
     const posMoves = peice.getPossibleMove(this.boardData);
     const eatMoves = peice.getEatMoves(this.boardData);
+
     if (eatMoves.length === 0)
       posMoves.forEach((move) => {
         const [row, col] = move;
@@ -75,21 +104,5 @@ export class GameEvents {
       });
 
     this.selectPiece = peice;
-  }
-
-  onCellClick(row, col) {
-    this.table = selectElement("table");
-    const resTryMove = this.tryMove(row, col);
-
-    if (resTryMove) {
-      this.selectPiece.row = row;
-      this.selectPiece.col = col;
-      this.changeActivePlayer();
-      this.selectPiece = undefined;
-    } else {
-      this.cleanActiveCells();
-      this.selectPiece = undefined;
-      this.showPossibleMove(row, col);
-    }
   }
 }
