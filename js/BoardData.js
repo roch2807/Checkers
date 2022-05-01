@@ -42,4 +42,7 @@ export class BoardData {
       if (peice.col === col && peice.row === row) this.pieces.splice(i, 1);
     }
   }
+  getNumPlayersByColor(color) {
+    return this.pieces.filter((piece) => piece.color === color).length;
+  }
 }
