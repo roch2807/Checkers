@@ -101,8 +101,10 @@ export class Piece {
 
       const nextMoveLeftPos = [newMove[0] + dirRow, newMove[1] - 1];
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
+      const backMoveLeftPos = [newMove[0] + dirRow * -1, newMove[1] - 1];
+      const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
 
-      let checkNextleftJumpPos = this.checkEatMoveDir(
+      let checkNextLeftJumpPos = this.checkEatMoveDir(
         newMove,
         nextMoveLeftPos,
         boardData
@@ -113,15 +115,25 @@ export class Piece {
         nextMoveRightPos,
         boardData
       );
+      let checkBackLeftJumpPos = this.checkEatMoveDir(
+        newMove,
+        backMoveLeftPos,
+        boardData
+      );
+      let checkBackRightJumpPos = this.checkEatMoveDir(
+        newMove,
+        backMoveRightPos,
+        boardData
+      );
 
-      while (checkNextRightJumpPos || checkNextleftJumpPos) {
-        if (checkNextleftJumpPos) {
-          let { newMove, dirRow } = checkNextleftJumpPos;
+      while (checkNextRightJumpPos || checkNextLeftJumpPos) {
+        if (checkNextLeftJumpPos) {
+          let { newMove, dirRow } = checkNextLeftJumpPos;
 
           checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
             this.eatMoves.push(newMove);
           const nextMovePos = [newMove[0] + dirRow, newMove[1] - 1];
-          checkNextleftJumpPos = this.checkEatMoveDir(
+          checkNextLeftJumpPos = this.checkEatMoveDir(
             newMove,
             nextMovePos,
             boardData
