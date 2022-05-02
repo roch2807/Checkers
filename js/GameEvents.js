@@ -75,9 +75,8 @@ export class GameEvents {
   checkWinner() {
     const secColor = this.getSecColor(this.activePlayer);
     const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
-    const secPlayerCanMove = this.boardData.checkIfsecPlayerCanMove(secColor);
 
-    if (secPlayerAmountPieces === 0 || !secPlayerCanMove) {
+    if (secPlayerAmountPieces === 0) {
       this.openModel(
         `Congratulations ${capitalFirstLetter(this.activePlayer)} Won!!!`
       );

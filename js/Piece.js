@@ -80,7 +80,12 @@ export class Piece {
       let row = this.row + directionRow * i;
       let col = this.col + directionCol * i;
       const pieceSameColor = boardData.getPlayer(row, col);
+      const opponent = boardData.getOpponent(row, col);
       if (pieceSameColor && pieceSameColor.color === this.color) {
+        result.push([row, col]);
+        return result;
+      }
+      if (opponent) {
         result.push([row, col]);
         return result;
       }

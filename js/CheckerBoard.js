@@ -18,6 +18,7 @@ export class CheckerBoard {
       const rowElement = this.table.insertRow();
       for (let col = 0; col < this.size; col++) {
         const cell = rowElement.insertCell();
+        cell.dataset.indexPos = [row, col];
         cell.addEventListener("click", () => onCellClick(row, col));
       }
     }
