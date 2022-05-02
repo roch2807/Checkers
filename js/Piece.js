@@ -10,15 +10,12 @@ export class Piece {
   constructor(row, col, color, type) {
     this.row = row;
     this.col = col;
-
     this.color = color;
     this.type = type;
-
     this.relativeMoves = [];
     this.possibleMoves = [];
     this.opponentPos = [];
     this.eatMoves = [];
-
     this.dir = this.color === WHITE ? 1 : -1;
     this.elPawn = document.createElement("div");
     this.elPawn.classList.add("center-abs", "pawn", `pawn-${color}`);
@@ -28,12 +25,16 @@ export class Piece {
     this.type = QUEEN;
   }
 
-  queenMove(directionRow, directionCol) {
-    //-1,0
+  queenMove(directionRow, directionCol, boardData) {
     let result = [];
     for (let i = 1; i < SIZE_BOARD; i++) {
       let row = this.row + directionRow * i;
       let col = this.col + directionCol * i;
+      const peiceSameColor = boardData.getPlayer(row, col);
+      if (peiceSameColor && peiceSameColor.color === this.color) {
+        result.push([row, col]);
+        return result;
+      }
       result.push([row, col]);
     }
     return result;
@@ -41,14 +42,16 @@ export class Piece {
   pawnMove() {
     let newRow;
     newRow = this.row + this.dir;
+
     return [
       [newRow, this.col + 1],
       [newRow, this.col - 1],
     ];
   }
-  checkOpponentPos(row, col) {
-    const difRow = row - this.row;
-    const difCol = col - this.col;
+  checkOpponentPos(row, col, curMove = [this.row, this.col]) {
+    const [Row, Col] = curMove;
+    const difRow = row - Row;
+    const difCol = col - Col;
 
     if (difRow <= -2 && difCol > 0) return [row + 1, col - 1];
     else if (difRow <= -2 && difCol < 0) return [row + 1, col + 1];
@@ -86,73 +89,33 @@ export class Piece {
   eatMove(boardData) {
     if (this.opponentPos.length === 0) return;
 
-    this.opponentPos.forEach((absMove) => {
-      let checkNextJumpPos = this.checkEatMoveDir(
-        [this.row, this.col],
-        absMove,
+    const recuresSearch = (firstMove, nextMove, boardData) => {
+      const checkNextMove = this.checkEatMoveDir(
+        firstMove,
+        nextMove,
         boardData
       );
 
-      if (!checkNextJumpPos) return;
-      const { newMove, dirRow, dirCol } = checkNextJumpPos;
+      if (!checkNextMove) {
+        return false;
+      }
+
+      const { newMove, dirRow, dirCol } = checkNextMove;
 
       checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
         this.eatMoves.push(newMove);
-
       const nextMoveLeftPos = [newMove[0] + dirRow, newMove[1] - 1];
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
-      const backMoveLeftPos = [newMove[0] + dirRow * -1, newMove[1] - 1];
       const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
-
-      let checkNextLeftJumpPos = this.checkEatMoveDir(
-        newMove,
-        nextMoveLeftPos,
-        boardData
-      );
-
-      let checkNextRightJumpPos = this.checkEatMoveDir(
-        newMove,
-        nextMoveRightPos,
-        boardData
-      );
-      let checkBackLeftJumpPos = this.checkEatMoveDir(
-        newMove,
-        backMoveLeftPos,
-        boardData
-      );
-      let checkBackRightJumpPos = this.checkEatMoveDir(
-        newMove,
-        backMoveRightPos,
-        boardData
-      );
-
-      while (checkNextRightJumpPos || checkNextLeftJumpPos) {
-        if (checkNextLeftJumpPos) {
-          let { newMove, dirRow } = checkNextLeftJumpPos;
-
-          checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
-            this.eatMoves.push(newMove);
-          const nextMovePos = [newMove[0] + dirRow, newMove[1] - 1];
-          checkNextLeftJumpPos = this.checkEatMoveDir(
-            newMove,
-            nextMovePos,
-            boardData
-          );
-        }
-
-        if (checkNextRightJumpPos) {
-          let { newMove, dirRow } = checkNextRightJumpPos;
-          checkTheElIsUniqueInArray(newMove, this.eatMoves) &&
-            this.eatMoves.push(newMove);
-
-          const nextMovePos = [newMove[0] + dirRow, newMove[1] + 1];
-          checkNextRightJumpPos = this.checkEatMoveDir(
-            newMove,
-            nextMovePos,
-            boardData
-          );
-        }
-      }
+      if (
+        !recuresSearch(newMove, nextMoveLeftPos, boardData) &&
+        !recuresSearch(newMove, nextMoveRightPos, boardData) &&
+        !recuresSearch(newMove, backMoveRightPos, boardData)
+      )
+        return;
+    };
+    this.opponentPos.forEach((opPos) => {
+      recuresSearch([this.row, this.col], opPos, boardData);
     });
   }
 
@@ -163,15 +126,15 @@ export class Piece {
     return this.eatMoves;
   }
 
-  getRelativeMoves() {
+  getRelativeMoves(boardData) {
     this.relativeMoves =
       this.type === SIMPLE_PAWN
         ? this.pawnMove()
         : [
-            ...this.queenMove(-1, 1),
-            ...this.queenMove(1, -1),
-            ...this.queenMove(1, 1),
-            ...this.queenMove(-1, -1),
+            ...this.queenMove(-1, 1, boardData),
+            ...this.queenMove(1, -1, boardData),
+            ...this.queenMove(1, 1, boardData),
+            ...this.queenMove(-1, -1, boardData),
           ];
   }
 
@@ -180,8 +143,10 @@ export class Piece {
   }
 
   filterRegularMoves(boardData) {
-    this.getRelativeMoves();
+    this.getRelativeMoves(boardData);
+
     this.opponentPos = [];
+
     this.possibleMoves = this.relativeMoves.filter((move) => {
       const [row, col] = move;
       const piece = boardData.getPlayer(row, col);
@@ -189,6 +154,7 @@ export class Piece {
 
       if (opponent && checkTheElIsUniqueInArray(move, this.opponentPos))
         this.opponentPos.push(move);
+
       if (this.checkBorders(row, col) && !piece) return move;
     });
   }

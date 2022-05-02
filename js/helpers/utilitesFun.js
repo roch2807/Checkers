@@ -217,8 +217,41 @@ export const getValuesUntilValueInArray = (value, arr) => {
     i++;
   }
   newArr.push(value);
-  console.log(newArr);
+
   return newArr;
 };
 
 export const capitalFirstLetter = (str) => str[0].toUpperCase() + str.slice(1);
+
+export const findTheRoadArrayInTree = (value, arr) => {
+  if (arr.length === 0) return [];
+
+  let index = 0;
+  let arrRoad = [];
+  const searchRoadTree = (arr, index, length) => {
+    if (index > length) return;
+    let el = arr[index];
+
+    if (el && el.toString() === value.toString()) {
+      arrRoad.push(el);
+      return true;
+    }
+
+    if (searchRoadTree(arr, index + 1, length)) {
+      el && arrRoad.push(el);
+      return true;
+    }
+    if (searchRoadTree(arr, index + 2, length)) {
+      el && arrRoad.push(el);
+      return true;
+    }
+
+    if (searchRoadTree(arr, index + 3, length)) {
+      el && arrRoad.push(el);
+      return true;
+    }
+  };
+
+  searchRoadTree(arr, index, arr.length);
+  return arrRoad;
+};

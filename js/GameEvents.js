@@ -1,6 +1,7 @@
 import { BLACK, WHITE } from "./helpers/ConstantVariables.js";
 import {
   capitalFirstLetter,
+  findTheRoadArrayInTree,
   getfirstElementChild,
   getValuesUntilValueInArray,
   selectElement,
@@ -33,6 +34,7 @@ export class GameEvents {
       }
     }
   }
+
   tryMove(row, col) {
     if (!this.selectPiece) return;
 
@@ -80,7 +82,6 @@ export class GameEvents {
     }
   }
   changePlayerToQueen() {
-    this.activePlayer = BLACK;
     this.activePlayer === WHITE &&
       this.selectPiece.row === 7 &&
       this.selectPiece.setQueen();
@@ -99,6 +100,7 @@ export class GameEvents {
       this.changePlayerToQueen();
       this.checkWinner();
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
+
       this.selectPiece = undefined;
       this.mustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
         this.activePlayer
@@ -115,14 +117,15 @@ export class GameEvents {
 
     if (!peice) return;
 
-    // if (
-    //   this.mustMoves.length > 0 &&
-    //   !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
-    // )
-    //   return;
+    if (
+      this.mustMoves.length > 0 &&
+      !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
+    )
+      return;
 
     const checkCurActivePlayer = peice.color === this.activePlayer;
-    // if (!checkCurActivePlayer) return;
+    if (!checkCurActivePlayer) return;
+
     const posMoves = peice.getPossibleMove(this.boardData);
     const eatMoves = peice.getEatMoves(this.boardData);
 
