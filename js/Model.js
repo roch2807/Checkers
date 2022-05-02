@@ -1,3 +1,7 @@
+/**
+ * @class Class that create the model window and and the backDrop
+ * The class also manage the events of the model
+ */
 export class Model {
   constructor(initApp) {
     this.model = this.createModel();
@@ -15,7 +19,8 @@ export class Model {
     backDrop.id = "backDrop";
     return backDrop;
   }
-  createModelWindow() {
+  // Create the model ,the heading, and the buttons
+  createModelCard() {
     const model = document.createElement("div");
     model.id = "model";
     const h2 = document.createElement("h2");
@@ -35,11 +40,13 @@ export class Model {
   createModel() {
     const container = this.createContainer();
     const backDrop = this.createBackDrop();
-    const model = this.createModelWindow();
+    const model = this.createModelCard();
     container.append(backDrop, model);
     return container;
   }
 
+  //open the model , generate the attach the correct message
+  // and init the events of the model
   openModel(message) {
     const h2 = this.model.querySelector("h2");
     h2.textContent = message;
@@ -48,8 +55,8 @@ export class Model {
   }
 
   initModelEvents() {
+    //Close model by click backdrop
     const backDrop = document.getElementById("backDrop");
-
     backDrop.addEventListener("click", () => {
       this.model.remove();
     });
@@ -58,7 +65,11 @@ export class Model {
     buttonsContainer.addEventListener("click", (e) => {
       const target = e.target;
       if (!target.closest("button")) return;
+
+      //Close model by click the close button
       if (target.classList.contains("buttonClose")) this.model.remove();
+
+      //Reset the app and close the model
       if (target.classList.contains("buttonReset")) {
         this.model.remove();
         this.initApp();

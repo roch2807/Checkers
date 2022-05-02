@@ -36,6 +36,7 @@ export class BoardData {
     const peice = this.getPlayer(row, col);
     if (peice && peice.color !== color) return peice;
   }
+
   getSameColorPiece(row, col) {
     const peice = this.getPlayer(row, col);
     if (peice && peice.color === this.color) return peice;
@@ -43,13 +44,18 @@ export class BoardData {
 
   removePlayer(row, col) {
     for (let i = 0; i < this.pieces.length; i++) {
-      const peice = this.pieces[i];
-      if (peice.col === col && peice.row === row) this.pieces.splice(i, 1);
+      const piece = this.pieces[i];
+      if (piece.col === col && piece.row === row) this.pieces.splice(i, 1);
     }
   }
+
   getNumPlayersByColor(color) {
     return this.pieces.filter((piece) => piece.color === color).length;
   }
+
+  //Get color and filter the pieces with the same color
+  //and piece that can eat other pieces
+  //Return the array with the pieces that only them can move
   checkIfSomePlayerHaveEatMoves(color) {
     return this.pieces.filter((piece) => {
       if (color === piece.color) {
@@ -59,5 +65,17 @@ export class BoardData {
 
       return color === piece.color && piece.eatMoves.length > 0;
     });
+  }
+  //Check the possible movement of pieces with the same color
+  //If there is player with possible move return true
+  checkIfsecPlayerCanMove(color) {
+    const res = this.pieces
+      .filter((piece) => piece.color === color)
+      .some(
+        (piece) =>
+          piece.getPossibleMove(this) && piece.possibleMoves.length !== 0
+      );
+
+    return res;
   }
 }

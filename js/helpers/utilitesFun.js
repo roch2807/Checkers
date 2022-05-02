@@ -205,9 +205,21 @@ export const getHowManyTimeElApperInArr = (check, arr) => {
  */
 export const objDeepCopy = (obj) => JSON.parse(JSON.stringify(obj));
 
+/**
+ *
+ * @param {Any} el
+ * @param {Array} arr
+ * @returns  True if the element is in the array
+ */
 export const checkTheElIsUniqueInArray = (el, arr) =>
   !arr.some((obj) => obj.toString() === el.toString());
 
+/**
+ *
+ * @param {Any} value
+ * @param {Array} arr
+ * @returns Array with the values until the value we query for
+ */
 export const getValuesUntilValueInArray = (value, arr) => {
   if (!arr.some((el) => el.toString() === value.toString())) return [];
   let i = 0;
@@ -221,8 +233,19 @@ export const getValuesUntilValueInArray = (value, arr) => {
   return newArr;
 };
 
+/**
+ *
+ * @param {String} str
+ * @returns String with first character is captial letter
+ */
 export const capitalFirstLetter = (str) => str[0].toUpperCase() + str.slice(1);
 
+/**
+ *
+ * @param {Any} value
+ * @param {Array} arr
+ * @returns The road values of tree node until the value we query for.
+ */
 export const findTheRoadArrayInTree = (value, arr) => {
   if (arr.length === 0) return [];
 
@@ -236,7 +259,7 @@ export const findTheRoadArrayInTree = (value, arr) => {
       arrRoad.push(el);
       return true;
     }
-
+    //Cheak each side of node,
     if (searchRoadTree(arr, index + 1, length)) {
       el && arrRoad.push(el);
       return true;

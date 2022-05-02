@@ -3,6 +3,7 @@ import { CheckerBoard } from "./CheckerBoard.js";
 import { GameEvents } from "./GameEvents.js";
 import { Model } from "./Model.js";
 
+//init the app
 const initApp = () => {
   const boardData = new BoardData();
   const model = new Model(initApp);

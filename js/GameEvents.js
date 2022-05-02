@@ -7,7 +7,9 @@ import {
   selectElement,
 } from "./helpers/utilitesFun.js";
 import { Piece } from "./Piece.js";
-
+/**
+ * @class Class that manage the events of the game
+ */
 export class GameEvents {
   constructor(boardData, openModel) {
     this.table = selectElement("table");
@@ -15,7 +17,7 @@ export class GameEvents {
     this.openModel = openModel;
     this.selectPiece = undefined;
     this.activePlayer = BLACK;
-    this.mustMoves = [];
+    this.piecesThatMustMoves = [];
   }
 
   tryRemoveFromTheGame(row, col) {
@@ -71,14 +73,16 @@ export class GameEvents {
     this.activePlayer = this.getSecColor(this.activePlayer);
   }
   checkWinner() {
-    const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(
-      this.getSecColor(this.activePlayer)
-    );
-    if (secPlayerAmountPieces === 0) {
+    const secColor = this.getSecColor(this.activePlayer);
+    const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
+    const secPlayerCanMove = this.boardData.checkIfsecPlayerCanMove(secColor);
+
+    if (secPlayerAmountPieces === 0 || !secPlayerCanMove) {
       this.openModel(
         `Congratulations ${capitalFirstLetter(this.activePlayer)} Won!!!`
       );
       this.activePlayer = undefined;
+      return true;
     }
   }
   changePlayerToQueen() {
@@ -97,12 +101,13 @@ export class GameEvents {
     if (resTryMove) {
       this.selectPiece.row = row;
       this.selectPiece.col = col;
+
       this.changePlayerToQueen();
-      this.checkWinner();
+      if (this.checkWinner()) return;
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
 
       this.selectPiece = undefined;
-      this.mustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
+      this.piecesThatMustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
         this.activePlayer
       );
     } else {
@@ -118,13 +123,15 @@ export class GameEvents {
     if (!peice) return;
 
     if (
-      this.mustMoves.length > 0 &&
-      !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
+      this.piecesThatMustMoves.length > 0 &&
+      !this.piecesThatMustMoves.some(
+        (el) => el.row === peice.row && el.col === peice.col
+      )
     )
       return;
 
     const checkCurActivePlayer = peice.color === this.activePlayer;
-    if (!checkCurActivePlayer) return;
+    if (!checkCurActivePlayer) return alert(`It's ${this.activePlayer} Turn!`);
 
     const posMoves = peice.getPossibleMove(this.boardData);
     const eatMoves = peice.getEatMoves(this.boardData);

@@ -6,6 +6,9 @@ import {
 } from "./helpers/ConstantVariables.js";
 import { checkTheElIsUniqueInArray } from "./helpers/utilitesFun.js";
 
+/**
+ * @class Class with all the data about piece
+ */
 export class Piece {
   constructor(row, col, color, type) {
     this.row = row;
@@ -16,13 +19,53 @@ export class Piece {
     this.possibleMoves = [];
     this.opponentPos = [];
     this.eatMoves = [];
+
     this.dir = this.color === WHITE ? 1 : -1;
     this.elPawn = document.createElement("div");
     this.elPawn.classList.add("center-abs", "pawn", `pawn-${color}`);
   }
-  setQueen() {
-    this.elPawn.classList.add(`${QUEEN}-${this.color}`);
-    this.type = QUEEN;
+
+  getPossibleMove(boardData) {
+    this.filterRegularMoves(boardData);
+
+    return this.possibleMoves;
+  }
+  filterRegularMoves(boardData) {
+    this.getRelativeMoves(boardData);
+
+    this.opponentPos = [];
+
+    this.possibleMoves = this.relativeMoves.filter((move) => {
+      const [row, col] = move;
+      const piece = boardData.getPlayer(row, col);
+      const opponent = boardData.getOpponent(row, col, this.color);
+
+      if (opponent && checkTheElIsUniqueInArray(move, this.opponentPos))
+        this.opponentPos.push(move);
+
+      if (this.checkBorders(row, col) && !piece) return move;
+    });
+  }
+  getRelativeMoves(boardData) {
+    this.relativeMoves =
+      this.type === SIMPLE_PAWN
+        ? this.pawnMove()
+        : [
+            ...this.queenMove(-1, 1, boardData),
+            ...this.queenMove(1, -1, boardData),
+            ...this.queenMove(1, 1, boardData),
+            ...this.queenMove(-1, -1, boardData),
+          ];
+  }
+
+  pawnMove() {
+    let newRow;
+    newRow = this.row + this.dir;
+
+    return [
+      [newRow, this.col + 1],
+      [newRow, this.col - 1],
+    ];
   }
 
   queenMove(directionRow, directionCol, boardData) {
@@ -39,53 +82,12 @@ export class Piece {
     }
     return result;
   }
-  pawnMove() {
-    let newRow;
-    newRow = this.row + this.dir;
+  getEatMoves(boardData) {
+    this.eatMoves = [];
+    this.eatMove(boardData);
 
-    return [
-      [newRow, this.col + 1],
-      [newRow, this.col - 1],
-    ];
+    return this.eatMoves;
   }
-  checkOpponentPos(row, col, curMove = [this.row, this.col]) {
-    const [Row, Col] = curMove;
-    const difRow = row - Row;
-    const difCol = col - Col;
-
-    if (difRow <= -2 && difCol > 0) return [row + 1, col - 1];
-    else if (difRow <= -2 && difCol < 0) return [row + 1, col + 1];
-    else if (difRow >= 2 && difCol < 0) return [row - 1, col + 1];
-    else if (difRow >= 2 && difCol > 0) return [row - 1, col - 1];
-    else return [];
-  }
-
-  checkEatMoveDir(curPos, nextPos, boardData) {
-    const [curRow, curCol] = curPos;
-    const [nextRow, nextCol] = nextPos;
-    const difRow = nextRow - curRow;
-    const difCol = nextCol - curCol;
-    const dirRow = difRow > 0 ? 1 : -1;
-    const dirCol = difCol > 0 ? 1 : -1;
-    const newRow = nextRow + dirRow;
-    const newCol = nextCol + dirCol;
-
-    const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
-    const checkBoarder = this.checkBorders(newRow, newCol);
-    const isEmpty = boardData.getPlayer(newRow, newCol);
-
-    if (!isOpponent) return;
-    if (!checkBoarder) return;
-    if (isEmpty) return;
-
-    const opponentPos = [isOpponent.row, isOpponent.col];
-
-    checkTheElIsUniqueInArray(opponentPos, this.opponentPos) &&
-      this.opponentPos.push(opponentPos);
-
-    return { newMove: [newRow, newCol], dirRow, dirCol };
-  }
-
   eatMove(boardData) {
     if (this.opponentPos.length === 0) return;
 
@@ -118,50 +120,49 @@ export class Piece {
       recuresSearch([this.row, this.col], opPos, boardData);
     });
   }
+  checkEatMoveDir(curPos, nextPos, boardData) {
+    const [curRow, curCol] = curPos;
+    const [nextRow, nextCol] = nextPos;
+    const difRow = nextRow - curRow;
+    const difCol = nextCol - curCol;
+    const dirRow = difRow > 0 ? 1 : -1;
+    const dirCol = difCol > 0 ? 1 : -1;
+    const newRow = nextRow + dirRow;
+    const newCol = nextCol + dirCol;
 
-  getEatMoves(boardData) {
-    this.eatMoves = [];
-    this.eatMove(boardData);
+    const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
+    const checkBoarder = this.checkBorders(newRow, newCol);
+    const isEmpty = boardData.getPlayer(newRow, newCol);
 
-    return this.eatMoves;
+    if (!isOpponent) return;
+    if (!checkBoarder) return;
+    if (isEmpty) return;
+
+    const opponentPos = [isOpponent.row, isOpponent.col];
+
+    checkTheElIsUniqueInArray(opponentPos, this.opponentPos) &&
+      this.opponentPos.push(opponentPos);
+
+    return { newMove: [newRow, newCol], dirRow, dirCol };
   }
 
-  getRelativeMoves(boardData) {
-    this.relativeMoves =
-      this.type === SIMPLE_PAWN
-        ? this.pawnMove()
-        : [
-            ...this.queenMove(-1, 1, boardData),
-            ...this.queenMove(1, -1, boardData),
-            ...this.queenMove(1, 1, boardData),
-            ...this.queenMove(-1, -1, boardData),
-          ];
+  checkOpponentPos(row, col, curMove = [this.row, this.col]) {
+    const [Row, Col] = curMove;
+    const difRow = row - Row;
+    const difCol = col - Col;
+
+    if (difRow <= -2 && difCol > 0) return [row + 1, col - 1];
+    else if (difRow <= -2 && difCol < 0) return [row + 1, col + 1];
+    else if (difRow >= 2 && difCol < 0) return [row - 1, col + 1];
+    else if (difRow >= 2 && difCol > 0) return [row - 1, col - 1];
+    else return [];
   }
 
   checkBorders(row, col) {
     return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
   }
-
-  filterRegularMoves(boardData) {
-    this.getRelativeMoves(boardData);
-
-    this.opponentPos = [];
-
-    this.possibleMoves = this.relativeMoves.filter((move) => {
-      const [row, col] = move;
-      const piece = boardData.getPlayer(row, col);
-      const opponent = boardData.getOpponent(row, col, this.color);
-
-      if (opponent && checkTheElIsUniqueInArray(move, this.opponentPos))
-        this.opponentPos.push(move);
-
-      if (this.checkBorders(row, col) && !piece) return move;
-    });
-  }
-
-  getPossibleMove(boardData) {
-    this.filterRegularMoves(boardData);
-
-    return this.possibleMoves;
+  setQueen() {
+    this.elPawn.classList.add(`${QUEEN}-${this.color}`);
+    this.type = QUEEN;
   }
 }
