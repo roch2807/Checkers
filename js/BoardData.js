@@ -8,10 +8,10 @@ import { Piece } from "./Piece.js";
 
 export class BoardData {
   constructor() {
-    this.pieces = this.createPeice();
+    this.pieces = this.createPiece();
   }
 
-  createPeice() {
+  createPiece() {
     let piecesArr = [];
     for (let i = 0; i < SIZE_BOARD; i++) {
       if (i % 2 !== 0) {
@@ -33,13 +33,8 @@ export class BoardData {
   }
 
   getOpponent(row, col, color) {
-    const peice = this.getPlayer(row, col);
-    if (peice && peice.color !== color) return peice;
-  }
-
-  getSameColorPiece(row, col) {
-    const peice = this.getPlayer(row, col);
-    if (peice && peice.color === this.color) return peice;
+    const piece = this.getPlayer(row, col);
+    if (piece && piece.color !== color) return piece;
   }
 
   removePlayer(row, col) {
@@ -55,7 +50,7 @@ export class BoardData {
 
   //Get color and filter the pieces with the same color
   //and piece that can eat other pieces
-  //Return the array with the pieces that only them can move
+  //Return the array with the pieces that can move
   checkIfSomePlayerHaveEatMoves(color) {
     return this.pieces.filter((piece) => {
       if (color === piece.color) {

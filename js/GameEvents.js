@@ -118,23 +118,23 @@ export class GameEvents {
   }
 
   showPossibleMove(row, col) {
-    const peice = this.boardData.getPlayer(row, col);
+    const piece = this.boardData.getPlayer(row, col);
 
-    if (!peice) return;
+    if (!piece) return;
 
     if (
       this.piecesThatMustMoves.length > 0 &&
       !this.piecesThatMustMoves.some(
-        (el) => el.row === peice.row && el.col === peice.col
+        (el) => el.row === piece.row && el.col === piece.col
       )
     )
       return;
 
-    const checkCurActivePlayer = peice.color === this.activePlayer;
+    const checkCurActivePlayer = piece.color === this.activePlayer;
     if (!checkCurActivePlayer) return alert(`It's ${this.activePlayer} Turn!`);
 
-    const posMoves = peice.getPossibleMove(this.boardData);
-    const eatMoves = peice.getEatMoves(this.boardData);
+    const posMoves = piece.getPossibleMove(this.boardData);
+    const eatMoves = piece.getEatMoves(this.boardData);
 
     if (eatMoves.length === 0)
       posMoves.forEach((move) => {
@@ -147,6 +147,6 @@ export class GameEvents {
         this.table.rows[row].cells[col].classList.add("active");
       });
 
-    this.selectPiece = peice;
+    this.selectPiece = piece;
   }
 }
