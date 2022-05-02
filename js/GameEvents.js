@@ -1,4 +1,4 @@
-import { BLACK, WHITE } from "./helpers/ConstantVariables.js";
+import { BLACK, QUEEN, WHITE } from "./helpers/ConstantVariables.js";
 import {
   capitalFirstLetter,
   findTheRoadArrayInTree,
@@ -98,13 +98,15 @@ export class GameEvents {
     const resTryMove = this.tryMove(row, col);
 
     if (resTryMove) {
+      if (this.selectPiece.type === QUEEN) console.log(this.selectPiece);
       this.selectPiece.row = row;
       this.selectPiece.col = col;
 
       this.changePlayerToQueen();
       if (this.checkWinner()) return;
+      console.log(this, this.selectPiece);
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
-
+      console.log(this, this.selectPiece);
       this.selectPiece = undefined;
       this.piecesThatMustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
         this.activePlayer

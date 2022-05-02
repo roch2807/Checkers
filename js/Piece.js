@@ -89,7 +89,7 @@ export class Piece {
         result.push([row, col]);
         return result;
       }
-      result.push([row, col]);
+      if (this.checkBorders(row, col)) result.push([row, col]);
     }
     return result;
   }
@@ -113,7 +113,7 @@ export class Piece {
         boardData
       );
 
-      //If is not exsit exit from the function
+      //If is not exist exit from the function
       if (!checkNextMove) return false;
 
       const { newMove, dirRow } = checkNextMove;
@@ -159,15 +159,15 @@ export class Piece {
     const newRow = nextRow + dirRow;
     const newCol = nextCol + dirCol;
 
-    //Check if there is opponent nearby, the pos is legal and the nextPos is empty
+    //Check if there is opponent nearby, the pos is legal and the nextPos is occupied
     const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
     const checkBoarder = this.checkBorders(newRow, newCol);
-    const isEmpty = boardData.getPlayer(newRow, newCol);
+    const isOccupied = boardData.getPlayer(newRow, newCol);
 
     //Otherwise exit from the function
-    if (!isOpponent) return;
     if (!checkBoarder) return;
-    if (isEmpty) return;
+    if (!isOpponent) return;
+    if (isOccupied) return;
 
     const opponentPos = [isOpponent.row, isOpponent.col];
 
