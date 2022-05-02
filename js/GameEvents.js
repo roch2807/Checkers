@@ -1,18 +1,24 @@
 import { BLACK, WHITE } from "./helpers/ConstantVariables.js";
-import { getfirstElementChild, selectElement } from "./helpers/utilitesFun.js";
+import {
+  capitalFirstLetter,
+  getfirstElementChild,
+  getValuesUntilValueInArray,
+  selectElement,
+} from "./helpers/utilitesFun.js";
 import { Piece } from "./Piece.js";
 
 export class GameEvents {
-  constructor(boardData) {
+  constructor(boardData, openModel) {
+    this.table = selectElement("table");
     this.boardData = boardData;
+    this.openModel = openModel;
     this.selectPiece = undefined;
     this.activePlayer = BLACK;
     this.mustMoves = [];
   }
 
   tryRemoveFromTheGame(row, col) {
-    const posOp = this.selectPiece.checkOpponentRelative(row, col);
-
+    const posOp = this.selectPiece.checkOpponentPos(row, col);
     const eatMove = this.selectPiece.eatMoves.pop();
 
     eatMove &&
@@ -29,6 +35,7 @@ export class GameEvents {
   }
   tryMove(row, col) {
     if (!this.selectPiece) return;
+
     const activeTD = this.table.rows[row].cells[col];
 
     if (!activeTD.classList.contains("active")) return;
@@ -41,10 +48,6 @@ export class GameEvents {
   }
   getSecColor(color) {
     return color === BLACK ? WHITE : BLACK;
-  }
-
-  changeActivePlayer() {
-    this.activePlayer = this.getSecColor(this.activePlayer);
   }
 
   cleanActiveCells() {
@@ -62,17 +65,22 @@ export class GameEvents {
       this.table.rows[row].cells[col].classList.remove("active");
     });
   }
-
+  changeActivePlayer() {
+    this.activePlayer = this.getSecColor(this.activePlayer);
+  }
   checkWinner() {
     const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(
       this.getSecColor(this.activePlayer)
     );
     if (secPlayerAmountPieces === 0) {
+      this.openModel(
+        `Congratulations ${capitalFirstLetter(this.activePlayer)} Won!!!`
+      );
       this.activePlayer = undefined;
-      alert(`${this.activePlayer} Won`);
     }
   }
   changePlayerToQueen() {
+    this.activePlayer = BLACK;
     this.activePlayer === WHITE &&
       this.selectPiece.row === 7 &&
       this.selectPiece.setQueen();
@@ -90,7 +98,6 @@ export class GameEvents {
       this.selectPiece.col = col;
       this.changePlayerToQueen();
       this.checkWinner();
-
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
       this.selectPiece = undefined;
       this.mustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
@@ -102,19 +109,20 @@ export class GameEvents {
       this.showPossibleMove(row, col);
     }
   }
+
   showPossibleMove(row, col) {
     const peice = this.boardData.getPlayer(row, col);
 
     if (!peice) return;
 
-    if (
-      this.mustMoves.length > 0 &&
-      !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
-    )
-      return;
+    // if (
+    //   this.mustMoves.length > 0 &&
+    //   !this.mustMoves.some((el) => el.row === peice.row && el.col === peice.col)
+    // )
+    //   return;
 
     const checkCurActivePlayer = peice.color === this.activePlayer;
-    if (!checkCurActivePlayer) return;
+    // if (!checkCurActivePlayer) return;
     const posMoves = peice.getPossibleMove(this.boardData);
     const eatMoves = peice.getEatMoves(this.boardData);
 

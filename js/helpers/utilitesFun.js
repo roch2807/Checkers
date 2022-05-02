@@ -207,3 +207,18 @@ export const objDeepCopy = (obj) => JSON.parse(JSON.stringify(obj));
 
 export const checkTheElIsUniqueInArray = (el, arr) =>
   !arr.some((obj) => obj.toString() === el.toString());
+
+export const getValuesUntilValueInArray = (value, arr) => {
+  if (!arr.some((el) => el.toString() === value.toString())) return [];
+  let i = 0;
+  let newArr = [];
+  while (arr[i].toString() !== value.toString()) {
+    newArr.push(arr[i]);
+    i++;
+  }
+  newArr.push(value);
+  console.log(newArr);
+  return newArr;
+};
+
+export const capitalFirstLetter = (str) => str[0].toUpperCase() + str.slice(1);

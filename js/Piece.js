@@ -29,22 +29,31 @@ export class Piece {
   }
 
   queenMove(directionRow, directionCol) {
+    //-1,0
     let result = [];
     for (let i = 1; i < SIZE_BOARD; i++) {
       let row = this.row + directionRow * i;
       let col = this.col + directionCol * i;
-      result.push(row, col);
+      result.push([row, col]);
     }
     return result;
   }
-  checkOpponentRelative(row, col) {
+  pawnMove() {
+    let newRow;
+    newRow = this.row + this.dir;
+    return [
+      [newRow, this.col + 1],
+      [newRow, this.col - 1],
+    ];
+  }
+  checkOpponentPos(row, col) {
     const difRow = row - this.row;
     const difCol = col - this.col;
 
-    if (difRow === -2 && difCol > 0) return [row + 1, col - 1];
-    else if (difRow === -2 && difCol < 0) return [row + 1, col + 1];
-    else if (difRow === 2 && difCol < 0) return [row - 1, col + 1];
-    else if (difRow === 2 && difCol > 0) return [row - 1, col - 1];
+    if (difRow <= -2 && difCol > 0) return [row + 1, col - 1];
+    else if (difRow <= -2 && difCol < 0) return [row + 1, col + 1];
+    else if (difRow >= 2 && difCol < 0) return [row - 1, col + 1];
+    else if (difRow >= 2 && difCol > 0) return [row - 1, col - 1];
     else return [];
   }
 
@@ -142,28 +151,22 @@ export class Piece {
     return this.eatMoves;
   }
 
-  checkBorders(row, col) {
-    return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
-  }
-  pawnMove() {
-    let newRow;
-    newRow = this.row + this.dir;
-    return [
-      [newRow, this.col + 1],
-      [newRow, this.col - 1],
-    ];
-  }
   getRelativeMoves() {
     this.relativeMoves =
       this.type === SIMPLE_PAWN
         ? this.pawnMove()
         : [
-            ...this.queenMove(-1, 0),
-            ...this.queenMove(1, 0),
-            ...this.queenMove(0, -1),
-            ...this.queenMove(0, 1),
+            ...this.queenMove(-1, 1),
+            ...this.queenMove(1, -1),
+            ...this.queenMove(1, 1),
+            ...this.queenMove(-1, -1),
           ];
   }
+
+  checkBorders(row, col) {
+    return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
+  }
+
   filterRegularMoves(boardData) {
     this.getRelativeMoves();
     this.opponentPos = [];

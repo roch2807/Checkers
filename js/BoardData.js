@@ -15,14 +15,14 @@ export class BoardData {
     let piecesArr = [];
     for (let i = 0; i < SIZE_BOARD; i++) {
       if (i % 2 !== 0) {
-        piecesArr.push(new Piece(0, i, WHITE, SIMPLE_PAWN));
+        // piecesArr.push(new Piece(0, i, WHITE, SIMPLE_PAWN));
         piecesArr.push(new Piece(2, i, WHITE, SIMPLE_PAWN));
-        piecesArr.push(new Piece(6, i, BLACK, SIMPLE_PAWN));
+        // piecesArr.push(new Piece(6, i, BLACK, SIMPLE_PAWN));
       }
       if (i % 2 === 0) {
-        piecesArr.push(new Piece(1, i, WHITE, SIMPLE_PAWN));
+        // piecesArr.push(new Piece(1, i, WHITE, SIMPLE_PAWN));
         piecesArr.push(new Piece(5, i, BLACK, SIMPLE_PAWN));
-        piecesArr.push(new Piece(7, i, BLACK, SIMPLE_PAWN));
+        // piecesArr.push(new Piece(7, i, BLACK, SIMPLE_PAWN));
       }
     }
     return piecesArr;
