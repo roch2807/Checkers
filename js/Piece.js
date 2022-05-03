@@ -135,7 +135,6 @@ export class Piece {
 
       //Get the next pos to check:left square, right square and backward right square
       const nextMoveLeftPos = [newMove[0] + dirRow, newMove[1] - 1];
-
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
       const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
       const backMoveLeftPos = [newMove[0] + dirRow * -1, newMove[1] - 1];
@@ -232,9 +231,16 @@ export class Piece {
   checkBorders(row, col) {
     return row >= 0 && row < SIZE_BOARD && col >= 0 && col < SIZE_BOARD;
   }
+  resetPieceState() {
+    this.relativeMoves = [];
+    this.possibleMoves = [];
+    this.opponentPos = [];
+    this.eatMoves = [];
+  }
   setQueen() {
     this.elPawn.classList.add(`${QUEEN}-${this.color}`);
     this.type = QUEEN;
+    this.resetPieceState();
   }
 
   //Set the ablity to move backward during flip jump

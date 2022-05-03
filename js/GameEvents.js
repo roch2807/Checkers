@@ -1,4 +1,4 @@
-import { BLACK, QUEEN, WHITE } from "./helpers/ConstantVariables.js";
+import { BLACK, WHITE } from "./helpers/ConstantVariables.js";
 import {
   capitalFirstLetter,
   getfirstElementChild,
@@ -10,7 +10,6 @@ import { Piece } from "./Piece.js";
  */
 export class GameEvents {
   constructor(boardData, openModel) {
-    this.table = selectElement("table");
     this.boardData = boardData;
     this.openModel = openModel;
     this.selectPiece = undefined;
@@ -27,13 +26,13 @@ export class GameEvents {
     if (resTryMove) {
       this.selectPiece.row = row;
       this.selectPiece.col = col;
+      this.selectPiece.checkFilpMode();
+      if (this.checkWinner()) return;
 
       this.changePlayerToQueen();
-      if (this.checkWinner()) return;
 
       //If the selected piece have no possible eat move ,
       //Only then change the active player color will change .
-      this.selectPiece.checkFilpMode();
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
 
       this.selectPiece = undefined;
@@ -112,6 +111,7 @@ export class GameEvents {
     this.activePlayer === WHITE &&
       this.selectPiece.row === 7 &&
       this.selectPiece.setQueen();
+
     this.activePlayer === BLACK &&
       this.selectPiece.row === 0 &&
       this.selectPiece.setQueen();
@@ -120,7 +120,6 @@ export class GameEvents {
     const secColor = this.getSecColor(this.activePlayer);
     const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
     const secPlayerCanMove = this.boardData.checkIfsecPlayerCanMove(secColor);
-
     if (secPlayerAmountPieces === 0 || !secPlayerCanMove) {
       this.openModel(
         `Congratulations ${capitalFirstLetter(
@@ -140,6 +139,7 @@ export class GameEvents {
     const piece = this.boardData.getPlayer(row, col);
 
     if (!piece) return;
+
     if (!this.activePlayer)
       return alert("The game is done ,please refresh the page");
 
