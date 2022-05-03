@@ -1,9 +1,7 @@
 import { BLACK, QUEEN, WHITE } from "./helpers/ConstantVariables.js";
 import {
   capitalFirstLetter,
-  findTheRoadArrayInTree,
   getfirstElementChild,
-  getValuesUntilValueInArray,
   selectElement,
 } from "./helpers/utilitesFun.js";
 import { Piece } from "./Piece.js";
