@@ -25,6 +25,7 @@ export class Piece {
     this.dir = this.color === WHITE ? 1 : -1;
     this.elPawn = document.createElement("div");
     this.elPawn.classList.add("center-abs", "pawn", `pawn-${color}`);
+    this.cachedMoved = [];
   }
   //Get possible moves after filter of illegal moves
   getPossibleMove(boardData) {
@@ -68,18 +69,17 @@ export class Piece {
   pawnMove() {
     let newRow;
     newRow = this.row + this.dir;
-    if (this.flipMode)
-      return [
-        [newRow, this.col + 1],
-        [newRow, this.col - 1],
-        [newRow - this.dir * 2, this.col - 1],
-        [newRow - this.dir * 2, this.col + 1],
-      ];
-    else
-      return [
-        [newRow, this.col + 1],
-        [newRow, this.col - 1],
-      ];
+    return this.flipMode
+      ? [
+          [newRow, this.col + 1],
+          [newRow, this.col - 1],
+          [newRow - this.dir * 2, this.col - 1],
+          [newRow - this.dir * 2, this.col + 1],
+        ]
+      : [
+          [newRow, this.col + 1],
+          [newRow, this.col - 1],
+        ];
   }
 
   //Get queen moves by all oblique diractions
@@ -123,6 +123,7 @@ export class Piece {
       );
 
       //If is not exist exit from the function
+
       if (!checkNextMove) return false;
 
       const { newMove, dirRow } = checkNextMove;
@@ -137,12 +138,14 @@ export class Piece {
 
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
       const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
+      const backMoveLeftPos = [newMove[0] + dirRow * -1, newMove[1] - 1];
 
       //If there is no potenial square exit from the function
       if (
         !recursionSearch(newMove, nextMoveLeftPos, boardData) &&
         !recursionSearch(newMove, nextMoveRightPos, boardData) &&
-        !recursionSearch(newMove, backMoveRightPos, boardData)
+        !recursionSearch(newMove, backMoveRightPos, boardData) &&
+        !recursionSearch(newMove, backMoveLeftPos, boardData)
       )
         return;
     };
@@ -151,11 +154,22 @@ export class Piece {
     this.opponentPos.forEach((opPos) => {
       recursionSearch([this.row, this.col], opPos, boardData);
     });
+    this.cachedMoved = [];
   }
 
   checkPotentialEatMove(curPos, nextPos, boardData) {
     const [curRow, curCol] = curPos;
     const [nextRow, nextCol] = nextPos;
+
+    //For stack memory exceed- Important otherwise the recursion will be infinte!!!
+    if (
+      this.cachedMoved.some(
+        (el) => el.toString() === [curPos, nextPos].toString()
+      )
+    )
+      return;
+
+    this.cachedMoved.push([curPos, nextPos]);
 
     //Check diff between the next and pre rows and cols
     const difRow = nextRow - curRow;
@@ -171,6 +185,7 @@ export class Piece {
 
     //Check if there is opponent nearby, the pos is legal and the nextPos is occupied
     //Otherwise exit from the function
+
     const checkBoarder = this.checkBorders(newRow, newCol);
     if (!checkBoarder) return;
 
@@ -221,9 +236,12 @@ export class Piece {
     this.elPawn.classList.add(`${QUEEN}-${this.color}`);
     this.type = QUEEN;
   }
+
   //Set the ablity to move backward during flip jump
   checkFilpMode() {
-    if (this.eatMoves.length >= 2) this.flipMode = true;
-    if (this.eatMoves.length === 0) this.flipMode = false;
+    if (this.type === SIMPLE_PAWN) {
+      if (this.eatMoves.length >= 2) this.flipMode = true;
+      if (this.eatMoves.length === 0) this.flipMode = false;
+    }
   }
 }
