@@ -16,6 +16,7 @@ export class Piece {
     this.col = col;
     this.color = color;
     this.type = type;
+    this.flipMode = false;
     this.relativeMoves = [];
     this.possibleMoves = [];
     this.opponentPos = [];
@@ -63,15 +64,25 @@ export class Piece {
             ...this.queenMove(-1, -1, boardData),
           ];
   }
-
+  checkFilpMode() {
+    if (this.eatMoves.length >= 2) this.flipMode = true;
+    if (this.eatMoves.length === 0) this.flipMode = false;
+  }
   pawnMove() {
     let newRow;
     newRow = this.row + this.dir;
-
-    return [
-      [newRow, this.col + 1],
-      [newRow, this.col - 1],
-    ];
+    if (this.flipMode)
+      return [
+        [newRow, this.col + 1],
+        [newRow, this.col - 1],
+        [newRow - this.dir * 2, this.col - 1],
+        [newRow - this.dir * 2, this.col + 1],
+      ];
+    else
+      return [
+        [newRow, this.col + 1],
+        [newRow, this.col - 1],
+      ];
   }
 
   //Get queen moves by all oblique diractions

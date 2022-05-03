@@ -35,6 +35,7 @@ export class GameEvents {
 
       //If the selected piece have no possible eat move ,
       //Only then change the active player color will change .
+      this.selectPiece.checkFilpMode();
       this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
 
       this.selectPiece = undefined;
@@ -62,21 +63,30 @@ export class GameEvents {
 
     //Move the clicked pawn
     activeTD.appendChild(this.selectPiece.elPawn);
-
+    this.selectPiece.checkFilpMode();
     this.tryRemoveFromTheGame(row, col);
     this.cleanActiveCells();
 
     return this.selectPiece;
   }
+
   tryRemoveFromTheGame(row, col) {
+    //Check nearby the active square we clicked,if there is opponent to eat
     const posOp = this.selectPiece.checkOpponentPos(row, col);
+
+    //Remove the cur eatMove from the array
     const eatMove = this.selectPiece.eatMoves.pop();
 
+    //If there eatmove remove the active class from the square
     eatMove &&
       this.table.rows[eatMove[0]].cells[eatMove[1]].classList.remove("active");
+
+    //If there is opponent in nearby the sqaure we clicked , get the opponent piece
     if (posOp.length !== 0) {
       const opponent = this.boardData.getPlayer(...posOp);
 
+      //If the opponent is exist , remove from the board data
+      //and remove the opponent piece from the square in the dom
       if (opponent) {
         this.boardData.removePlayer(...posOp);
         const cell = this.table.rows[posOp[0]].cells[posOp[1]];
