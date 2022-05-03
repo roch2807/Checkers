@@ -64,10 +64,7 @@ export class Piece {
             ...this.queenMove(-1, -1, boardData),
           ];
   }
-  checkFilpMode() {
-    if (this.eatMoves.length >= 2) this.flipMode = true;
-    if (this.eatMoves.length === 0) this.flipMode = false;
-  }
+
   pawnMove() {
     let newRow;
     newRow = this.row + this.dir;
@@ -223,5 +220,10 @@ export class Piece {
   setQueen() {
     this.elPawn.classList.add(`${QUEEN}-${this.color}`);
     this.type = QUEEN;
+  }
+  //Set the ablity to move backward during flip jump
+  checkFilpMode() {
+    if (this.eatMoves.length >= 2) this.flipMode = true;
+    if (this.eatMoves.length === 0) this.flipMode = false;
   }
 }
