@@ -152,7 +152,7 @@ td:hover {
 #model h2 {
   text-align: center;
   position: absolute;
-  top: 30%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-weight: 500;
@@ -161,8 +161,8 @@ td:hover {
 .buttons_container {
   width: 70%;
   position: absolute;
-  top: 70%;
-  left: 50%;
+  bottom: 5%;
+  left: 49%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: space-between;

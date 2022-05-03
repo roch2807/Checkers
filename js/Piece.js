@@ -125,9 +125,10 @@ export class Piece {
 
       //Get the next pos to check:left square, right square and backward right square
       const nextMoveLeftPos = [newMove[0] + dirRow, newMove[1] - 1];
+
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
       const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
-
+      console.log(nextMoveLeftPos, nextMoveRightPos, backMoveRightPos);
       //If there is no potenial square exit from the function
       if (
         !recursionSearch(newMove, nextMoveLeftPos, boardData) &&
@@ -160,14 +161,16 @@ export class Piece {
     const newCol = nextCol + dirCol;
 
     //Check if there is opponent nearby, the pos is legal and the nextPos is occupied
-    const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
-    const checkBoarder = this.checkBorders(newRow, newCol);
-    const isOccupied = boardData.getPlayer(newRow, newCol);
-
     //Otherwise exit from the function
+
+    const checkBoarder = this.checkBorders(newRow, newCol);
     if (!checkBoarder) return;
-    if (!isOpponent) return;
+
+    const isOccupied = boardData.getPlayer(newRow, newCol);
     if (isOccupied) return;
+
+    const isOpponent = boardData.getOpponent(nextRow, nextCol, this.color);
+    if (!isOpponent) return;
 
     const opponentPos = [isOpponent.row, isOpponent.col];
 
@@ -178,8 +181,16 @@ export class Piece {
     return { newMove: [newRow, newCol], dirRow, dirCol };
   }
 
-  //Check if the row and col of the empty sqaure that are given
-  //are after opponent pos
+  /**
+   * 
+   * @param {Number} row 
+   * @param {Number} col 
+   * @param {Array} curMove Array of the cur pos :[row,col]
+   * @returns Return the potential pos of opponent.
+   *  Check if the row and col of the empty sqaure that are given,
+    are after opponent pos, and return the opponent pos.
+   */
+
   checkOpponentPos(row, col, curMove = [this.row, this.col]) {
     const [Row, Col] = curMove;
 

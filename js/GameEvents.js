@@ -20,6 +20,55 @@ export class GameEvents {
     this.piecesThatMustMoves = [];
   }
 
+  onCellClick(row, col) {
+    this.table = selectElement("table");
+    const resTryMove = this.tryMove(row, col);
+
+    if (this.selectPiece?.type === QUEEN) console.log(this.selectPiece);
+    //If  there is selected piece enter the block.
+    //The sec clicked on pawn
+    if (resTryMove) {
+      if (this.selectPiece.type === QUEEN) console.log(this.selectPiece);
+      this.selectPiece.row = row;
+      this.selectPiece.col = col;
+
+      this.changePlayerToQueen();
+      if (this.checkWinner()) return;
+
+      //If the selected piece have no possible eat move ,
+      //Only then change the active player color will change .
+      this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
+
+      this.selectPiece = undefined;
+
+      //Check which opponent player have possible move .
+      //Only with them the opponent will play.
+      this.piecesThatMustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
+        this.activePlayer
+      );
+    } else {
+      //The first click on pawn
+      this.cleanActiveCells();
+      this.selectPiece = undefined;
+      this.showPossibleMove(row, col);
+    }
+  }
+
+  tryMove(row, col) {
+    if (!this.selectPiece) return;
+
+    const activeTD = this.table.rows[row].cells[col];
+
+    //Only if the player click on active square the function wil excuate.
+    if (!activeTD.classList.contains("active")) return;
+
+    //Move the clicked pawn
+    activeTD.appendChild(this.selectPiece.elPawn);
+    this.tryRemoveFromTheGame(row, col);
+    this.cleanActiveCells();
+
+    return this.selectPiece;
+  }
   tryRemoveFromTheGame(row, col) {
     const posOp = this.selectPiece.checkOpponentPos(row, col);
     const eatMove = this.selectPiece.eatMoves.pop();
@@ -37,23 +86,6 @@ export class GameEvents {
     }
   }
 
-  tryMove(row, col) {
-    if (!this.selectPiece) return;
-
-    const activeTD = this.table.rows[row].cells[col];
-
-    if (!activeTD.classList.contains("active")) return;
-    activeTD.appendChild(this.selectPiece.elPawn);
-
-    this.tryRemoveFromTheGame(row, col);
-    this.cleanActiveCells();
-
-    return this.selectPiece;
-  }
-  getSecColor(color) {
-    return color === BLACK ? WHITE : BLACK;
-  }
-
   cleanActiveCells() {
     if (!this.selectPiece) return;
 
@@ -69,21 +101,6 @@ export class GameEvents {
       this.table.rows[row].cells[col].classList.remove("active");
     });
   }
-  changeActivePlayer() {
-    this.activePlayer = this.getSecColor(this.activePlayer);
-  }
-  checkWinner() {
-    const secColor = this.getSecColor(this.activePlayer);
-    const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
-
-    if (secPlayerAmountPieces === 0) {
-      this.openModel(
-        `Congratulations ${capitalFirstLetter(this.activePlayer)} Won!!!`
-      );
-      this.activePlayer = undefined;
-      return true;
-    }
-  }
   changePlayerToQueen() {
     this.activePlayer === WHITE &&
       this.selectPiece.row === 7 &&
@@ -92,51 +109,48 @@ export class GameEvents {
       this.selectPiece.row === 0 &&
       this.selectPiece.setQueen();
   }
+  checkWinner() {
+    const secColor = this.getSecColor(this.activePlayer);
+    const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
 
-  onCellClick(row, col) {
-    this.table = selectElement("table");
-    const resTryMove = this.tryMove(row, col);
-
-    if (resTryMove) {
-      if (this.selectPiece.type === QUEEN) console.log(this.selectPiece);
-      this.selectPiece.row = row;
-      this.selectPiece.col = col;
-
-      this.changePlayerToQueen();
-      if (this.checkWinner()) return;
-      console.log(this, this.selectPiece);
-      this.selectPiece.eatMoves.length === 0 && this.changeActivePlayer();
-      console.log(this, this.selectPiece);
-      this.selectPiece = undefined;
-      this.piecesThatMustMoves = this.boardData.checkIfSomePlayerHaveEatMoves(
-        this.activePlayer
+    if (secPlayerAmountPieces === 0) {
+      this.openModel(
+        `Congratulations ${capitalFirstLetter(
+          this.activePlayer
+        )} is the winner!!!`
       );
-    } else {
-      this.cleanActiveCells();
-      this.selectPiece = undefined;
-      this.showPossibleMove(row, col);
+      this.activePlayer = undefined;
+      return true;
     }
+  }
+
+  changeActivePlayer() {
+    this.activePlayer = this.getSecColor(this.activePlayer);
   }
 
   showPossibleMove(row, col) {
     const piece = this.boardData.getPlayer(row, col);
 
     if (!piece) return;
+    if (!this.activePlayer)
+      return alert("The game is done ,please refresh the page");
 
+    const checkCurActivePlayer = piece.color === this.activePlayer;
+    if (!checkCurActivePlayer) return alert(`It's ${this.activePlayer} Turn!`);
+
+    //Check it there are pieces that are must move
     if (
       this.piecesThatMustMoves.length > 0 &&
       !this.piecesThatMustMoves.some(
         (el) => el.row === piece.row && el.col === piece.col
       )
     )
-      return;
-
-    const checkCurActivePlayer = piece.color === this.activePlayer;
-    if (!checkCurActivePlayer) return alert(`It's ${this.activePlayer} Turn!`);
+      return alert(`The ${this.activePlayer} Must Eat!`);
 
     const posMoves = piece.getPossibleMove(this.boardData);
     const eatMoves = piece.getEatMoves(this.boardData);
 
+    // if no eat move only than show the possible move
     if (eatMoves.length === 0)
       posMoves.forEach((move) => {
         const [row, col] = move;
@@ -149,5 +163,8 @@ export class GameEvents {
       });
 
     this.selectPiece = piece;
+  }
+  getSecColor(color) {
+    return color === BLACK ? WHITE : BLACK;
   }
 }
