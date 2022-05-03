@@ -162,7 +162,7 @@ td:hover {
   width: 70%;
   position: absolute;
   bottom: 5%;
-  left: 49%;
+  left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   justify-content: space-between;

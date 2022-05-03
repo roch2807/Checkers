@@ -1,4 +1,5 @@
 import {
+  BLACK,
   QUEEN,
   SIMPLE_PAWN,
   SIZE_BOARD,
@@ -128,7 +129,7 @@ export class Piece {
 
       const nextMoveRightPos = [newMove[0] + dirRow, newMove[1] + 1];
       const backMoveRightPos = [newMove[0] + dirRow * -1, newMove[1] + 1];
-      console.log(nextMoveLeftPos, nextMoveRightPos, backMoveRightPos);
+
       //If there is no potenial square exit from the function
       if (
         !recursionSearch(newMove, nextMoveLeftPos, boardData) &&
@@ -162,7 +163,6 @@ export class Piece {
 
     //Check if there is opponent nearby, the pos is legal and the nextPos is occupied
     //Otherwise exit from the function
-
     const checkBoarder = this.checkBorders(newRow, newCol);
     if (!checkBoarder) return;
 
@@ -183,26 +183,26 @@ export class Piece {
 
   /**
    * 
-   * @param {Number} row 
-   * @param {Number} col 
+   * @param {Number} nextRow 
+   * @param {Number} nextCol 
    * @param {Array} curMove Array of the cur pos :[row,col]
    * @returns Return the potential pos of opponent.
    *  Check if the row and col of the empty sqaure that are given,
     are after opponent pos, and return the opponent pos.
    */
 
-  checkOpponentPos(row, col, curMove = [this.row, this.col]) {
-    const [Row, Col] = curMove;
+  checkOpponentPos(nextRow, nextCol, curMove = [this.row, this.col]) {
+    const [curRow, curCol] = curMove;
 
     //Check potential the diff between next and pre rows and col
-    const difRow = row - Row;
-    const difCol = col - Col;
+    const difRow = nextRow - curRow;
+    const difCol = nextCol - curCol;
 
     //Return the potential pos of opponent
-    if (difRow <= -2 && difCol > 0) return [row + 1, col - 1];
-    else if (difRow <= -2 && difCol < 0) return [row + 1, col + 1];
-    else if (difRow >= 2 && difCol < 0) return [row - 1, col + 1];
-    else if (difRow >= 2 && difCol > 0) return [row - 1, col - 1];
+    if (difRow <= -2 && difCol > 0) return [nextRow + 1, nextCol - 1];
+    else if (difRow <= -2 && difCol < 0) return [nextRow + 1, nextCol + 1];
+    else if (difRow >= 2 && difCol < 0) return [nextRow - 1, nextCol + 1];
+    else if (difRow >= 2 && difCol > 0) return [nextRow - 1, nextCol - 1];
     else return [];
   }
 

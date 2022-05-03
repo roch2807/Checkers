@@ -24,11 +24,9 @@ export class GameEvents {
     this.table = selectElement("table");
     const resTryMove = this.tryMove(row, col);
 
-    if (this.selectPiece?.type === QUEEN) console.log(this.selectPiece);
     //If  there is selected piece enter the block.
     //The sec clicked on pawn
     if (resTryMove) {
-      if (this.selectPiece.type === QUEEN) console.log(this.selectPiece);
       this.selectPiece.row = row;
       this.selectPiece.col = col;
 
@@ -64,6 +62,7 @@ export class GameEvents {
 
     //Move the clicked pawn
     activeTD.appendChild(this.selectPiece.elPawn);
+
     this.tryRemoveFromTheGame(row, col);
     this.cleanActiveCells();
 
@@ -112,8 +111,9 @@ export class GameEvents {
   checkWinner() {
     const secColor = this.getSecColor(this.activePlayer);
     const secPlayerAmountPieces = this.boardData.getNumPlayersByColor(secColor);
+    const secPlayerCanMove = this.boardData.checkIfsecPlayerCanMove(secColor);
 
-    if (secPlayerAmountPieces === 0) {
+    if (secPlayerAmountPieces === 0 || !secPlayerCanMove) {
       this.openModel(
         `Congratulations ${capitalFirstLetter(
           this.activePlayer
