@@ -32,7 +32,7 @@ The queen can move multipile steps backward and forward at once.
 The all possible pawn's steps were calcaulted by dynamic programing recursive algorithm.
 
 
-
-
+## Images:
+<div> <img src="./checkers.png" width="400" hight="400"> </div> 
 
 
