@@ -33,6 +33,6 @@ The all possible pawn's steps were calcaulted by dynamic programing recursive al
 
 
 ## Images:
-<div> <img src="./checkers.png" width="400" hight="400"> </div> 
+<div> alt="checkers-board" <img src="./checkers.png" width="500" hight="500"> </div> 
 
 
