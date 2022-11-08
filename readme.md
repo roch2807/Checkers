@@ -8,7 +8,7 @@ The Checkers game was the final project of the Cyber4s's intensive pre course. \
 The project was submmitted after 3 days of hard work and reviewed by course's instructors. \
 The 40 students who have the most impresive projects were accepted to continue the full course. 
 
-## What I have learnd:
+## What have I learnd ?
 During the project, I have learnd a new approch of spliting the game's logic and the UI display. \
 Before I programmed this project, I programmed javascript games while the game logic and UI display influnced each other directly. \
 This behvior caused bugs and unwanted side effects. \
