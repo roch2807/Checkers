@@ -1,6 +1,6 @@
 # Checkers Game
 
-Link to the app: [checkers-game](https://eloquent-meerkat-846f76.netlify.app/):point_left: 
+Link to the app: [checkers-game](https://eloquent-meerkat-846f76.netlify.app/):point_left: \
 Link to my code overview: [code-overview](https://drive.google.com/drive/folders/1tebwAWbhXOqbhLWqo7rVBgRXDMgSyQe0?usp=sharing):point_left:
 
 ## About
