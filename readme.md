@@ -19,16 +19,16 @@ The project revealed me a different approach of programming games.
 - **[css](https://www.npmjs.com/package/sass)**
 
 ## Main Feautres: ##
-1. Only Forward diagonal pawn move.
-2. Pawn caupturing - If there is many options the player can choose.
+1. **Pawn's regular step** - Only one forward diagonal step is allowed.
+2. **Pawns caupturing** - If there is many options the player can choose.
 3. The player must caputre a pawn if he has a option.
-4. End game- If the opponent hasn't any pawns you win.\
+4. **End game** - If the opponent hasn't any pawns you win.\
 If any player can't move its a draw.
 
 ### Bonuses:
-1. Queen- If Player's pawn can reach to the other side of the field, he will get a queen. \
+1. **Queen**- If Player's pawn can reach to the other side of the field, he will get a queen. \
 The queen can move multipile steps backward and forward at once. 
-2. Mulpile capture steps - If there are more than one pawn the player can capture them by multiple steps. \
+2. **Multipile captures steps** - If there are more than one pawn the player can capture them by multiple steps. \
 The all possible pawn's steps were calcaulted by dynamic programing recursive algorithm.
 
 
